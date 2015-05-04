@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 
 // resources
@@ -20,10 +21,14 @@ var main = {};
 
 // give a warning if the file and regex aren't supplied
 if ( !argv.r || !argv.f ) {
-  console.log(cliError('\n\nProper syntax is') + ' `node find.js -r ".*something here.*" -l "gi" -f ~/filepath.txt -s "string replacement text" -n ~/newFilePath.txt`');
-  console.log(cliNotice('Order of the options does not matter, and -s and -n are optional.\n\n'));
-  console.log(cliNeutral('Options provided were:'));
-  console.log(argv);
+  console.log(cliError('\n\nProper syntax is') + cliGood(' node find.js -r ".*something here.*" -l "gi" -f ~/filepath.txt -s "string replacement text" -n ~/newFilePath.txt'));
+  console.log('Order of the options does not matter, and -s and -n are optional.\n');
+  
+  if ( argv.r || argv.f || argv.l || argv.s ) {
+    console.log('Options provided were:');
+    console.log(argv);
+    console.log('\n');
+  }
 
   process.exit(0);
 }
@@ -36,7 +41,7 @@ async.waterfall([function(callback) {
       if (exists) {
         callback();
       } else {
-        console.log(cliError('The file can\'t be found, check your filepath.'));
+        console.log(cliError('\nThe file can\'t be found, check your filepath.\n'));
 
         process.exit(0);
       }
@@ -60,7 +65,7 @@ async.waterfall([function(callback) {
     // count the number of instances
     main.matches = main.fileData.match(main.regex);
     main.matchesLength = main.matches ? main.matches.length : 0;
-    console.log(cliNotice('\n\nFound ' + main.matchesLength + ' matches for regex ' + main.regex));
+    console.log(cliNotice('\n\nFound ' + main.matchesLength + ' matches for regex ' + main.regex + '\n\n'));
 
     if (argv.s) {
 
@@ -81,7 +86,7 @@ async.waterfall([function(callback) {
           console.log(cliNotice('Creating a new file from changes...'));
           var path = argv.n;
         } else {
-          console.log(cliNotice('Writing matches to file...'));
+          console.log(cliNotice('Writing changes to file...'));
           var path = argv.f;
         }
 
@@ -94,15 +99,14 @@ async.waterfall([function(callback) {
       }
 
     } else if (main.matchesLength) {
-      console.log(clc.reset);
 
       for (var match in main.matches) {
         console.log(cliGood(main.matches[match]));
       }
 
-      console.log(cliGood('Done!'));
+      console.log(cliNotice('\nDone printing ' + main.matchesLength + ' matches!'));
     } else {
-      console.log(cliGood('Done!'));
+      console.log(cliGood('\nDone!'));
     }
 
     callback();

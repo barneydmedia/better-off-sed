@@ -1,7 +1,7 @@
 {
   "name": "better-off-sed",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple CLI script to make replacements or read matches from larger files. This was built to edit and cut down on files too big for Sublime or Text Wrangler to handle. Install globally for best results.",
   "main": "index.js",
   "dependencies": {
     "async": "^0.9.0",
@@ -10,9 +10,12 @@
     "progress": "^1.1.8"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "bosed": "bin/app.js"
   },
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Barney Davis",
+  "license": "MIT"
 }
