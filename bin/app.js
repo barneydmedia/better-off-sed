@@ -21,9 +21,14 @@ var main = {};
 
 // give a warning if the file and regex aren't supplied
 if ( !argv.r || !argv.f ) {
-  console.log(cliError('\n\nProper syntax is') + cliGood(' node find.js -r ".*something here.*" -l "gi" -f ~/filepath.txt -s "string replacement text" -n ~/newFilePath.txt'));
-  console.log('Order of the options does not matter, and -s and -n are optional.\n');
-  
+  console.log(cliError('\n\nProper syntax is') + cliGood(' bosed -r ".*something here.*" -l gi -f ~/filepath.txt -s "string replacement text" -n ~/newFilePath.txt\n'));
+  console.log('   -f [required] file path, can be relative or absolute');
+  console.log('   -r [required] regex pattern, no delimiters, escape properly');
+  console.log('   -l [optional] replacement flags, ex. "gi" for replace all, disregard letter case in matching');
+  console.log('   -s [optional] replacemnet string, ex. "some string"');
+  console.log('   -v [optional] verbose mode, echoes all matches being replaced (default behavior is a progress bar)');
+  console.log('\n');
+
   if ( argv.r || argv.f || argv.l || argv.s ) {
     console.log('Options provided were:');
     console.log(argv);
@@ -65,20 +70,42 @@ async.waterfall([function(callback) {
     // count the number of instances
     main.matches = main.fileData.match(main.regex);
     main.matchesLength = main.matches ? main.matches.length : 0;
+
+    // remove global flag from flags variable if it exists
+    main.regex = new RegExp(argv.r, argv.l.replace('g', ''));
     console.log(cliNotice('\n\nFound ' + main.matchesLength + ' matches for regex ' + main.regex + '\n\n'));
 
+    // replace all the things!
     if (argv.s) {
 
       if (argv.s == 'null') argv.s = '';
+      
+      if (!argv.v) {
+        console.log(clc.reset);
+        var bar = new ProgressBar('\nReplacing matches: [:bar] :percent | Time Elapsed: :elapseds | Replacing :total matches', {
+          complete: '=',
+          incomplete: ' ',
+          width: 70,
+          total: (main.matchesLength) + 1
+        });
+        bar.tick();
+      }
 
       var hash0 = md5Hash(main.fileData);
       var hash1;
 
       // do replacements and tick the progress bar
-      main.newData = main.fileData.replace(main.regex, argv.s);
+      for (var i = 0; i < main.matchesLength; i++) {
+        
+        // verbose output gives each match being replaced
+        if (argv.v) console.log('Replacing: ' + main.matches[i] + ' with ' + argv.s);
+        
+        main.newData = main.fileData.replace( main.regex, argv.s );
+        if (!argv.v) bar.tick();
+      }
 
+      // compare beginning and end results (via hashes)
       hash1 = md5Hash(main.newData);
-
       console.log(cliNeutral('Were both input and output the same? ' + (hash0 == hash1)));
 
       if (hash0 != hash1) {

@@ -14,7 +14,7 @@
     "bosed": "bin/app.js"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node bin/app.js"
   },
   "author": "Barney Davis",
   "license": "MIT"
