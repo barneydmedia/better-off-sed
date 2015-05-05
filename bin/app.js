@@ -25,8 +25,8 @@ if ( !argv.r || !argv.f ) {
   console.log('   -f [required] file path, can be relative or absolute');
   console.log('   -r [required] regex pattern, no delimiters, escape properly');
   console.log('   -l [optional] replacement flags, ex. "gi" for replace all, disregard letter case in matching');
-  console.log('   -s [optional] replacemnet string, ex. "some string"');
-  console.log('   -v [optional] verbose mode, echoes all matches being replaced (default behavior is a progress bar)');
+  console.log('   -s [optional] replacement string, ex. "some string"');
+  console.log('   -v [optional] verbose mode, echoes all matches being replaced instead of a simpler progress bar');
   console.log('\n');
 
   if ( argv.r || argv.f || argv.l || argv.s ) {
