@@ -78,6 +78,8 @@ async.waterfall([function(callback) {
     // replace all the things!
     if (argv.s) {
 
+      argv.s = argv.s.replace(/\\n/g, '\n');
+
       if (argv.s == 'null') argv.s = '';
       
       if (!argv.v) {
